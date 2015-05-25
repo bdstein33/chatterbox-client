@@ -5,6 +5,8 @@ body {
     font-family: arial, sans-serif;
 }
 
+
+
 #main {
     width: 500px;
     margin: auto;
@@ -46,6 +48,8 @@ body {
     line-height: 13px;
 }
 
+
+
 form {
     padding: 20px;
     padding-left: 0;
@@ -81,4 +85,37 @@ form input[type=text] {
 
 .spinner img {
     padding: 10px;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+.message {
+    margin-bottom: 20px;
+}
+
+.refresh-button {
+    width: 200px;
+    height: 50px;
+    background-color: #F7F7F7;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    border: 1px solid #F7F7F7;
+}
+
+.refresh-button:hover{
+    cursor:pointer;
+    border: 1px solid grey;
+}
+
+.button-text {
+    text-align: center;
+    line-height: 50px;
+}
+
+.header {
+    text-align: center;
 }
