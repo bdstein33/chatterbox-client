@@ -10,7 +10,7 @@ app.init = function() {
     type: 'GET',
     contentType: 'application/json',
     success: function (data) {
-      app.populateMessages(data.results);
+      app.populateMessages(data.results, app.lastUpdate);
       console.log('Chatterbox: Got messages');
     },
     error: function (data) {
@@ -25,7 +25,9 @@ app.sanitize = function(string) {
   return string.replace(/<.*?>/, "");
 }
 
-app.populateMessages = function(messages) {
+app.populateMessages = function(messages, startTime) {
+  startTime = startTime || 0;
+  console.log(startTime)
   //append a message div to message-container div
   app.lastUpdate = messages[0].createdAt;
   _.each(messages, function(message) {
@@ -34,15 +36,17 @@ app.populateMessages = function(messages) {
     var date = moment(app.sanitize(message.createdAt)).fromNow();
     var roomname = app.sanitize(message.roomname);
 
-    var $message_html =
-    "<div class='message' room=" + roomname + ">" +
-      "<p class='message-text'>" + text + "</p>" +
-      "<p class='message-username'>" + username + "</p>" +
-      "<p class='message-date'>" + date + "</p>" +
-      "<p class='message-room'>" + roomname + "</p></div>"
-    $('.message-container').append($message_html);
+    if (moment(message.createdAt).isAfter(startTime)) {
+      var $message_html =
+      "<div class='message' room=" + roomname + ">" +
+        "<p class='message-text'>" + text + "</p>" +
+        "<p class='message-username'>" + username + "</p>" +
+        "<p class='message-date'>" + date + "</p>" +
+        "<p class='message-room'>" + roomname + "</p></div>"
+      $('.message-container').prepend($message_html);
+    }
   });
-
+  console.log('-----------------------');
 };
 
 app.init();
@@ -67,6 +71,7 @@ app.submitMessage = function(username, text, roomname) {
     data: JSON.stringify(message),
     contentType: 'application/json',
     success: function (data) {
+      app.init();
       console.log('chatterbox: Message sent');
     },
     error: function (data) {
