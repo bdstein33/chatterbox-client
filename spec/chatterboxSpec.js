@@ -32,6 +32,7 @@ describe('chatterbox', function() {
         expect($.ajax.calledOnce).to.be.true;
         // sinon.spy method `args` comes in the form [function calls][arguments from that call]
         ajaxOptions = typeof $.ajax.args[0][0] === 'object' ? $.ajax.args[0][0] : $.ajax.args[0][1];
+        // console.log(ajaxOptions.type);
         expect(ajaxOptions.type).to.equal('POST');
         done();
       });
@@ -61,6 +62,9 @@ describe('chatterbox', function() {
         app.fetch();
         expect($.ajax.calledOnce).to.be.true;
         ajaxUrl = typeof $.ajax.args[0][0] === 'string' ? $.ajax.args[0][0] : $.ajax.args[0][0].url;
+        // console.log(ajaxUrl);
+        // console.log($.ajax.args[0][0].url);
+        // console.log(app.server);
         expect(ajaxUrl).to.equal(app.server);
         done();
       });
@@ -69,9 +73,10 @@ describe('chatterbox', function() {
 
     describe('chatroom behavior', function() {
       it('should be able to clear messages from the DOM', function(){
-        var orig = $('#chats').html('<blink>OMG IT\'s 1998!</blink>');
+        var orig = $('.message-container').html('<blink class=\"message\">OMG IT\'s 1998!</blink>');
         app.clearMessages();
-        expect($('#chats').children().length).to.equal(0);
+        console.log($('.message-container').children().length);
+        expect($('.message-container').children().length).to.equal(0);
       });
 
       it('should be able to add messages to the DOM', function(){
@@ -82,8 +87,10 @@ describe('chatterbox', function() {
         };
 
         app.addMessage(message);
+        console.log(message);
+        console.log($('.message-container'));
 
-        expect($('#chats').children().length).to.equal(1);
+        expect($('.message-container').children().length).to.equal(1);
       });
 
       it('should be able to add rooms to the DOM', function(){

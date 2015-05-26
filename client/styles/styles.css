@@ -1,10 +1,67 @@
-body {
-    background: #eee;
-    text-align: center;
-    padding: 0 25px;
-    font-family: arial, sans-serif;
+/*color scheme from: https://color.adobe.com/Flat-UI-color-theme-2469224/*/
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato';
 }
 
+html {
+    width: 100%;
+    height: 100%;
+}
+
+
+body {
+    background: #eee;
+    max-width: 1200px;
+    margin-left:auto;
+    margin-right: auto;
+    height: 100%;
+}
+
+
+#top-nav {
+    background-color: #303030;
+    height: 50px;
+    width: 100%;
+    border-bottom: 1px solid #202020;
+}
+
+#header-main {
+    color: white;
+    text-align: center;
+    line-height: 50px;
+}
+
+#side-bar{
+    height: 100%;
+    width: 250px;
+    background-color: #2C3E50;
+    display:block;
+    color: #ECF0F1;
+    padding-top: 20px;
+}
+
+.side-bar-header {
+    padding-left: 20px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid white;
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+.side-bar-room {
+    padding-left: 20px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    font-size: 20px;
+}
+
+.side-bar-room:hover {
+    cursor: pointer;
+    background-color: #8695A3;
+}
 
 
 #main {
@@ -96,7 +153,7 @@ p {
     margin-bottom: 20px;
 }
 
-.refresh-button {
+.centered-button {
     width: 200px;
     height: 50px;
     background-color: #F7F7F7;
@@ -106,7 +163,7 @@ p {
     border: 1px solid #F7F7F7;
 }
 
-.refresh-button:hover{
+.centered-button:hover{
     cursor:pointer;
     border: 1px solid grey;
 }

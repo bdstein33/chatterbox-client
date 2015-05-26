@@ -1,24 +1,29 @@
 //https://api.parse.com/1/classes/chatterbox
 var app = {};
+app.allMessages = {};
 app.lastUpdate;
+app.server = 'https://api.parse.com/1/classes/chatterbox'
 
 app.init = function() {
   //GET messages from Parse server
+  app.fetch();
+};
+
+app.fetch = function() {
   $.ajax({
-    // always use this url
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: app.server,
     type: 'GET',
     contentType: 'application/json',
     success: function (data) {
+      console.log(data)
       app.populateMessages(data.results, app.lastUpdate);
       console.log('Chatterbox: Got messages');
     },
     error: function (data) {
-      // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
       console.error('Chatterbox: Failed to get messages');
     }
   });
-};
+}
 
 app.sanitize = function(string) {
   var string = string || "";
@@ -27,51 +32,53 @@ app.sanitize = function(string) {
 
 app.populateMessages = function(messages, startTime) {
   startTime = startTime || 0;
-  console.log(startTime)
-  //append a message div to message-container div
   app.lastUpdate = messages[0].createdAt;
   _.each(messages, function(message) {
-    var text = app.sanitize(message.text);
-    var username = app.sanitize(message.username);
-    var date = moment(app.sanitize(message.createdAt)).fromNow();
-    var roomname = app.sanitize(message.roomname);
-
     if (moment(message.createdAt).isAfter(startTime)) {
-      var $message_html =
-      "<div class='message' room=" + roomname + ">" +
-        "<p class='message-text'>" + text + "</p>" +
-        "<p class='message-username'>" + username + "</p>" +
-        "<p class='message-date'>" + date + "</p>" +
-        "<p class='message-room'>" + roomname + "</p></div>"
-      $('.message-container').prepend($message_html);
+      app.addMessage(message);
     }
   });
-  console.log('-----------------------');
+
 };
 
 app.init();
 
+app.addMessage = function(message) {
+  var text = app.sanitize(message.text);
+  var username = app.sanitize(message.username);
+  var date = moment(app.sanitize(message.createdAt)).fromNow();
+  var roomname = app.sanitize(message.roomname);
+  if (app.allMessages.hasOwnProperty(roomname)) {
+    app.allMessages[roomname].unshift(message);
+  } else {
+    app.allMessages[roomname] = [message];
+  }
+  var $message_html =
+  "<div class='message' room=" + roomname + ">" +
+    "<p class='message-text'>" + text + "</p>" +
+    "<p class='message-username'>" + username + "</p>" +
+    "<p class='message-date'>" + date + "</p>" +
+    "<p class='message-room'>" + roomname + "</p></div>"
+  $('.message-container').prepend($message_html);
+  console.log(app.allMessages);
+};
 
 
-//POST message to Parse server
-
-
-
-
-app.submitMessage = function(username, text, roomname) {
+app.send = function(messageData) {
   var message = {
-    'username': username,
-    'text': text,
-    'roomname': roomname
+    'username': messageData.username,
+    'text': messageData.text,
+    'roomname': messageData.roomname
   };
 
   $.ajax({
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: app.server,
     type: 'POST',
     data: JSON.stringify(message),
     contentType: 'application/json',
     success: function (data) {
       app.init();
+      $("[type='text']").val('');
       console.log('chatterbox: Message sent');
     },
     error: function (data) {
@@ -80,18 +87,45 @@ app.submitMessage = function(username, text, roomname) {
   });
 };
 
+app.clearMessages = function() {
+  $('.message').remove();
+};
+
+app.addRooms = function() {
+  var rooms = Object.keys(app.allMessages);
+  console.log(rooms);
+  _.each(rooms, function (room){
+    console.log(room)
+    var $sidebar_html = "<p class='side-bar-room' room=" + room + "></p>";
+    $('.side-bar').append($sidebar_html);
+  });
+};
+
+
 
 $(document).ready(function(){
+  app.addRooms();
+
   $(".refresh-button").click(function() {
     app.init();
   });
 
+  $(".clear-button").click(function() {
+    app.clearMessages();
+  });
+
   $('.message-form').submit(function(e) {
     e.preventDefault();
+    var messageData = {};
+    messageData.username = $("[name='username']").val();
+    messageData.text = $("[name='text']").val();
+    messageData.roomname = $("[name='roomname']").val();
+    // var username = $("[name='username']").val();
+    // var text = $("[name='text']").val();
+    // var roomname = $("[name='roomname']").val();
 
-    var username = $("[name='username']").val();
-    var text = $("[name='text']").val();
-    var roomname = $("[name='roomname']").val();
-    app.submitMessage(username, text, roomname);
+    app.send(messageData);
   });
+
+
 });
