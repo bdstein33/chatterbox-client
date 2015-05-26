@@ -119,3 +119,23 @@ p {
 .header {
     text-align: center;
 }
+
+.form-header{
+    margin-bottom: 1px;
+}
+
+/*.form-container {
+    background-color: #f7f7f7;
+}*/
+
+form {
+    width: 100%;
+}
+
+input{
+    margin-bottom: 10px;
+}
+
+.submit {
+    display: block;
+}
