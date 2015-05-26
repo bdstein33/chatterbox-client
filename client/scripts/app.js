@@ -3,6 +3,7 @@ var app = {};
 app.allMessages = {};
 app.lastUpdate = 0;
 app.server = 'https://api.parse.com/1/classes/chatterbox';
+app.friendList = [];
 
 app.init = function() {
   //GET messages from Parse server
@@ -25,20 +26,19 @@ app.fetch = function() {
   });
 };
 
-app.sanitize = function(string) {
-  var string = string || "";
-  return string.replace(/<.*?>/, "");
+app.sanitize = function (string) {
+  return _.escape(string);
 };
+
 
 app.populateMessages = function(messages, startTime) {
   app.lastUpdate = messages[0].createdAt;
-  _.each(messages, function(message) {
+  _.each(messages.reverse(), function(message) {
     if (moment(message.createdAt).isAfter(startTime)) {
       app.addMessage(message);
     }
   });
 };
-
 
 app.init();
 
@@ -47,7 +47,7 @@ app.addMessage = function(message) {
   var username = app.sanitize(message.username);
   var date = moment(app.sanitize(message.createdAt)).fromNow();
   var roomname = app.sanitize(message.roomname);
-  roomname = roomname.replace(/\s/g, '');
+  roomname = roomname.replace(/^\s+/g, '').replace(/\s+$/g, '');
   if (roomname.length === 0) {
     roomname = "Default";
   }
@@ -57,13 +57,24 @@ app.addMessage = function(message) {
     app.allMessages[roomname] = [message];
   }
   var $message_html =
-  "<div class='message' room=" + roomname + ">" +
+  "<div class='message' room=" + roomname.replace(/[ |']/, '-') + ">" +
     "<p class='message-text'>" + text + "</p>" +
     "<p class='message-username'>" + username + "</p>" +
     "<p class='message-date'>" + date + "</p>" +
     "<p class='message-room'>" + roomname + "</p></div>";
   $('.message-container').prepend($message_html);
 };
+
+  var special = {
+    'username': 'AAAAAAAAAAAA',
+    'text': 'AAAAAAAAa',
+    'roomname': 'asdAAAAAAAfsadf'
+  };
+
+for(var i = 0; i < 5; i++) {
+  app.addMessage(special);
+  console.log('special sent')
+}
 
 
 app.send = function(messageData) {
@@ -91,14 +102,25 @@ app.send = function(messageData) {
 
 app.clearMessages = function() {
   $('.message').remove();
+  app.lastUpdate = 0;
 };
 
 app.addRooms = function() {
   var rooms = Object.keys(app.allMessages);
+  $('.side-bar-room').remove();
   _.each(rooms, function (room){
     var $sidebar_html = "<p class='side-bar-room' room=\'" + room + "\'>" + room + "  (" + app.allMessages[room].length.toString() + ")" + "</p>";
-    $('#side-bar').append($sidebar_html);
+    $('.side-bar-room-div').append($sidebar_html);
   });
+};
+
+app.addFriend = function(username) {
+  if (app.friendList.indexOf(username) != -1) {
+    var $sidebar_html = "<p class='side-bar-friend' username=\'" + username + "\'>" + "@" + username + "</p>";
+    $('.side-bar-friends-div').append($sidebar_html);
+    app.friendList.push(username);
+  }
+
 };
 
 var togglePostForm = function() {
@@ -115,7 +137,7 @@ app.filterMessages = function(room) {
 
   if (room !== undefined) {
     $('.message').each(function(){
-      if ($(this).attr('room') !== room) {
+      if ($(this).attr('room') !== room.replace(/[ |']/, '-')) {
         $(this).hide();
       }
     });
@@ -146,20 +168,9 @@ $(document).ready(function(){
     messageData.username = $("[name='username']").val();
     messageData.text = $("[name='text']").val();
     messageData.roomname = $("[name='roomname']").val();
-    // var username = $("[name='username']").val();
-    // var text = $("[name='text']").val();
-    // var roomname = $("[name='roomname']").val();
     app.send(messageData);
     $('#form-container').hide();
   });
-
-
-  // $('.side-bar-room').click(function(e){
-  //   console.log("A");
-  //   var room = $(this).attr("room");
-  //   console.log(room);
-  //   app.filterMessages(room);
-  // });
 
   $('#side-bar').click(function(e){
     var room = $(e.target).attr('room');
@@ -167,6 +178,13 @@ $(document).ready(function(){
       app.filterMessages(room);
     }
   });
+
+  $('.message-username').click(function() {
+    var friend = $(this).text();
+    app.addFriend(friend);
+  });
+
+
 
 
 

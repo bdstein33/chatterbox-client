@@ -72,7 +72,8 @@ body {
     float: left;
     overflow: scroll;
     z-index: -10;
-
+    overflow-y:hidden;
+    overflow-x:hidden;
 }
 
 .side-bar-header {
@@ -93,7 +94,29 @@ body {
     width: 230px;
 }
 
+.side-bar-room-div {
+    display: inline-block;
+}
+
+.side-bar-friends-div {
+    padding-top: 20px;
+}
+
 .side-bar-room:hover {
+    cursor: pointer;
+    background-color: #646C7E;
+}
+
+.side-bar-friend {
+    padding-left: 20px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    font-size: 16px;
+    float: left;
+    width: 230px;
+}
+
+.side-bar-friend:hover {
     cursor: pointer;
     background-color: #646C7E;
 }
@@ -202,6 +225,8 @@ body {
 .message-container {
     max-height: 100%;
     overflow: scroll;
+    overflow-x: none;
+
 }
 
 .message-container-title{
