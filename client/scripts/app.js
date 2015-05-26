@@ -116,7 +116,6 @@ var togglePostForm = function() {
 $(document).ready(function(){
   $('#form-container').hide();
   $('.post-button').click(function() {
-    console.log("A");
     togglePostForm();
   });
 
@@ -139,8 +138,8 @@ $(document).ready(function(){
     // var username = $("[name='username']").val();
     // var text = $("[name='text']").val();
     // var roomname = $("[name='roomname']").val();
-
     app.send(messageData);
+    $('#form-container').hide();
   });
 
 
