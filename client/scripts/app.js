@@ -15,8 +15,8 @@ app.fetch = function() {
     type: 'GET',
     contentType: 'application/json',
     success: function (data) {
-      console.log(data)
       app.populateMessages(data.results, app.lastUpdate);
+      app.addRooms()
       console.log('Chatterbox: Got messages');
     },
     error: function (data) {
@@ -48,6 +48,10 @@ app.addMessage = function(message) {
   var username = app.sanitize(message.username);
   var date = moment(app.sanitize(message.createdAt)).fromNow();
   var roomname = app.sanitize(message.roomname);
+  roomname = roomname.replace(/\s/g, '');
+  if (roomname.length === 0) {
+    roomname = "Default";
+  }
   if (app.allMessages.hasOwnProperty(roomname)) {
     app.allMessages[roomname].unshift(message);
   } else {
@@ -60,7 +64,6 @@ app.addMessage = function(message) {
     "<p class='message-date'>" + date + "</p>" +
     "<p class='message-room'>" + roomname + "</p></div>"
   $('.message-container').prepend($message_html);
-  console.log(app.allMessages);
 };
 
 
@@ -93,17 +96,30 @@ app.clearMessages = function() {
 
 app.addRooms = function() {
   var rooms = Object.keys(app.allMessages);
-  console.log(rooms);
   _.each(rooms, function (room){
-    console.log(room)
-    var $sidebar_html = "<p class='side-bar-room' room=" + room + "></p>";
-    $('.side-bar').append($sidebar_html);
+    var $sidebar_html = "<p class='side-bar-room' room=\'" + room + "\'>" + room + "  (" + app.allMessages[room].length.toString() + ")" + "</p>";
+    $('#side-bar').append($sidebar_html);
   });
 };
+
+var togglePostForm = function() {
+  if ($('#form-container').is(':visible')) {
+    $('#form-container').slideUp();
+  }
+  else{
+    $('#form-container').slideDown()
+  }
+}
 
 
 
 $(document).ready(function(){
+  $('#form-container').hide();
+  $('.post-button').click(function() {
+    console.log("A");
+    togglePostForm();
+  });
+
   app.addRooms();
 
   $(".refresh-button").click(function() {
