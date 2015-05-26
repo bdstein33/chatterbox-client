@@ -83,6 +83,7 @@ body {
     margin-bottom: 5px;
     font-size: 24px;
     z-index: 10;
+    width: 230px;
 }
 
 .side-bar-room {
@@ -128,6 +129,7 @@ body {
     height: 100%;
     margin-left: 250px;
     max-width: 950px;
+        overflow-x:hidden;
 }
 
 #form-container {
@@ -225,7 +227,7 @@ body {
 .message-container {
     max-height: 100%;
     overflow: scroll;
-    overflow-x: none;
+        overflow-x:hidden;
 
 }
 
@@ -253,6 +255,11 @@ body {
     float: left;
     margin-right: 10px;
     line-height: 16px;
+    cursor: pointer;
+}
+
+.message-username:hover {
+    color: #E74C3C;
 }
 
 .message-date {

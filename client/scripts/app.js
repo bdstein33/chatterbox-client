@@ -18,6 +18,14 @@ app.fetch = function() {
     success: function (data) {
       app.populateMessages(data.results, app.lastUpdate);
       app.addRooms();
+      $('.message-container-title').text("All Messages");
+
+      $('.side-bar-friend').remove();
+      _.each(app.friendList, function(friend){
+        console.log(friend);
+        app.addFriend(friend);
+      });
+
       console.log('Chatterbox: Got messages');
     },
     error: function (data) {
@@ -36,6 +44,13 @@ app.populateMessages = function(messages, startTime) {
   _.each(messages.reverse(), function(message) {
     if (moment(message.createdAt).isAfter(startTime)) {
       app.addMessage(message);
+    }
+  });
+  $('.message-username').click(function() {
+    var friend = $(this).text();
+    if (app.friendList.indexOf(friend) === -1) {
+      app.friendList.push(friend);
+      app.addFriend(friend);
     }
   });
 };
@@ -65,18 +80,6 @@ app.addMessage = function(message) {
   $('.message-container').prepend($message_html);
 };
 
-  var special = {
-    'username': 'AAAAAAAAAAAA',
-    'text': 'AAAAAAAAa',
-    'roomname': 'asdAAAAAAAfsadf'
-  };
-
-for(var i = 0; i < 5; i++) {
-  app.addMessage(special);
-  console.log('special sent')
-}
-
-
 app.send = function(messageData) {
   var message = {
     'username': messageData.username,
@@ -103,6 +106,8 @@ app.send = function(messageData) {
 app.clearMessages = function() {
   $('.message').remove();
   app.lastUpdate = 0;
+  $('.message-container-title').text('Refresh to See Messages');
+  $('.side-bar-room, .side-bar-friend').remove();
 };
 
 app.addRooms = function() {
@@ -112,15 +117,15 @@ app.addRooms = function() {
     var $sidebar_html = "<p class='side-bar-room' room=\'" + room + "\'>" + room + "  (" + app.allMessages[room].length.toString() + ")" + "</p>";
     $('.side-bar-room-div').append($sidebar_html);
   });
+  $('.side-bar-room').click(function(){
+    var room = $(this).attr('room');
+    app.filterMessages(room);
+  });
 };
 
 app.addFriend = function(username) {
-  if (app.friendList.indexOf(username) != -1) {
-    var $sidebar_html = "<p class='side-bar-friend' username=\'" + username + "\'>" + "@" + username + "</p>";
-    $('.side-bar-friends-div').append($sidebar_html);
-    app.friendList.push(username);
-  }
-
+  var $sidebar_html = "<p class='side-bar-friend' username=\'" + username + "\'>" + "@" + username + "</p>";
+  $('.side-bar-friends-div').append($sidebar_html);
 };
 
 var togglePostForm = function() {
@@ -141,6 +146,7 @@ app.filterMessages = function(room) {
         $(this).hide();
       }
     });
+    $('.message-container-title').text(room);
   }
 };
 
@@ -171,23 +177,5 @@ $(document).ready(function(){
     app.send(messageData);
     $('#form-container').hide();
   });
-
-  $('#side-bar').click(function(e){
-    var room = $(e.target).attr('room');
-    if (room !== undefined) {
-      app.filterMessages(room);
-    }
-  });
-
-  $('.message-username').click(function() {
-    var friend = $(this).text();
-    app.addFriend(friend);
-  });
-
-
-
-
-
-
 
 });
