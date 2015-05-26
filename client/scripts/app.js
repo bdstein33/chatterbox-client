@@ -72,7 +72,7 @@ app.addMessage = function(message) {
     app.allMessages[roomname] = [message];
   }
   var $message_html =
-  "<div class='message' room=" + roomname.replace(/[ |']/, '-') + ">" +
+  "<div class='message' username=" + username.replace(/[ |']/, '-') + " room=" + roomname.replace(/[ |']/, '-') + ">" +
     "<p class='message-text'>" + text + "</p>" +
     "<p class='message-username'>" + username + "</p>" +
     "<p class='message-date'>" + date + "</p>" +
@@ -117,15 +117,19 @@ app.addRooms = function() {
     var $sidebar_html = "<p class='side-bar-room' room=\'" + room + "\'>" + room + "  (" + app.allMessages[room].length.toString() + ")" + "</p>";
     $('.side-bar-room-div').append($sidebar_html);
   });
-  $('.side-bar-room').click(function(){
+  $('.side-bar-room').click(function(e){
     var room = $(this).attr('room');
-    app.filterMessages(room);
+    app.filterMessagesByRoom(room);
   });
 };
 
 app.addFriend = function(username) {
-  var $sidebar_html = "<p class='side-bar-friend' username=\'" + username + "\'>" + "@" + username + "</p>";
+  var $sidebar_html = "<p class='side-bar-friend' username=\'" + username + "\'>" + username + "</p>";
   $('.side-bar-friends-div').append($sidebar_html);
+  $('.side-bar-friend').click(function(e){
+    var username = $(this).text();
+    app.filterMessagesByUsername(username)
+  })
 };
 
 var togglePostForm = function() {
@@ -137,7 +141,7 @@ var togglePostForm = function() {
   }
 };
 
-app.filterMessages = function(room) {
+app.filterMessagesByRoom = function(room) {
   $('.message').show();
 
   if (room !== undefined) {
@@ -150,7 +154,18 @@ app.filterMessages = function(room) {
   }
 };
 
+app.filterMessagesByUsername = function(username) {
+  $('.message').show();
 
+  if (username !== undefined) {
+    $('.message').each(function() {
+      if ($(this).attr('username') !== username.replace(/[ |']/, '-')) {
+        $(this).hide();
+      }
+    });
+    $('.message-container-title').text(username);
+  }
+}
 
 $(document).ready(function(){
   $('#form-container').hide();
@@ -161,6 +176,7 @@ $(document).ready(function(){
   app.addRooms();
 
   $(".refresh-button").click(function() {
+    app.clearMessages();
     app.init();
   });
 
@@ -178,4 +194,16 @@ $(document).ready(function(){
     $('#form-container').hide();
   });
 
+
+//test message flood
+// var testMessage = {
+//   'username': 'TESTMAN',
+//   'text': 'lorem ipsum doucheum',
+//   'roomname': 'KNEE DEEP IN THE DEAD'
+// };
+
+// for(var i = 0; i < 100; i++) {
+//   app.send(testMessage);
+// }
+//end test
 });
