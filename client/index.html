@@ -32,35 +32,33 @@
 
     </div>
     <div id="main-content">
-     <div id="form-container">
-       <div id="form-title">
-        <h1 id="form-title-text">Enter New Message</h1>
+      <div id="form-container">
+       <div id="form-container-content">
+         <div id="form-title">
+          <h1 id="form-title-text">Enter New Message</h1>
+         </div>
+         <form class="message-form">
+            <div id="form-input-container">
+              <div class="form-question">
+                <p class="form-header">Username</p>
+                <input class="form-input" type="text" name="username" placeholder="Enter username">
+              </div>
+              <div class="form-question">
+                <p class="form-header">Message</p>
+                <input class="form-input" type="text" name="text" placeholder="Enter message">
+              </div>
+              <div class="form-question">
+                <p class="form-header">Room</p>
+                <input class="form-input" type="text" name="roomname" placeholder="Enter room">
+              </div>
+            </div>
+            <input class="submit" type="submit" value="Submit">
+         </form>
+       </div>
       </div>
-      <div id="form-input-container">
-        <form class="message-form">
-          <div class="form-question">
-            <p class="form-header">Username</p>
-            <input class="form-input" type="text" name="username" placeholder="Enter username">
-          </div>
-          <div class="form-question">
-          <p class="form-header">Message</p>
-          <input class="form-input" type="text" name="text" placeholder="Enter message">
-          </div>
-          <div class="form-question">
-          <p class="form-header">Room</p>
-          <input class="form-input" type="text" name="roomname" placeholder="Enter room">
-          </div>
-        </div>
-        <input class="submit" type="submit" value="Submit">
-      </form>
-    </div>
-
-
-
-
-<!--
-
-    <div class="message-container">
-    </div> -->
+      <h1 class="message-container-title">All Messages</h1>
+      <div class="message-container">
+      </div> 
+    </body>
   </body>
 </html>

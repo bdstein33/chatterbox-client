@@ -1,8 +1,8 @@
 //https://api.parse.com/1/classes/chatterbox
 var app = {};
 app.allMessages = {};
-app.lastUpdate;
-app.server = 'https://api.parse.com/1/classes/chatterbox'
+app.lastUpdate = 0;
+app.server = 'https://api.parse.com/1/classes/chatterbox';
 
 app.init = function() {
   //GET messages from Parse server
@@ -16,30 +16,29 @@ app.fetch = function() {
     contentType: 'application/json',
     success: function (data) {
       app.populateMessages(data.results, app.lastUpdate);
-      app.addRooms()
+      app.addRooms();
       console.log('Chatterbox: Got messages');
     },
     error: function (data) {
       console.error('Chatterbox: Failed to get messages');
     }
   });
-}
+};
 
 app.sanitize = function(string) {
   var string = string || "";
   return string.replace(/<.*?>/, "");
-}
+};
 
 app.populateMessages = function(messages, startTime) {
-  startTime = startTime || 0;
   app.lastUpdate = messages[0].createdAt;
   _.each(messages, function(message) {
     if (moment(message.createdAt).isAfter(startTime)) {
       app.addMessage(message);
     }
   });
-
 };
+
 
 app.init();
 
@@ -62,7 +61,7 @@ app.addMessage = function(message) {
     "<p class='message-text'>" + text + "</p>" +
     "<p class='message-username'>" + username + "</p>" +
     "<p class='message-date'>" + date + "</p>" +
-    "<p class='message-room'>" + roomname + "</p></div>"
+    "<p class='message-room'>" + roomname + "</p></div>";
   $('.message-container').prepend($message_html);
 };
 
@@ -107,9 +106,21 @@ var togglePostForm = function() {
     $('#form-container').slideUp();
   }
   else{
-    $('#form-container').slideDown()
+    $('#form-container').slideDown();
   }
-}
+};
+
+app.filterMessages = function(room) {
+  $('.message').show();
+
+  if (room !== undefined) {
+    $('.message').each(function(){
+      if ($(this).attr('room') !== room) {
+        $(this).hide();
+      }
+    });
+  }
+};
 
 
 
@@ -141,6 +152,24 @@ $(document).ready(function(){
     app.send(messageData);
     $('#form-container').hide();
   });
+
+
+  // $('.side-bar-room').click(function(e){
+  //   console.log("A");
+  //   var room = $(this).attr("room");
+  //   console.log(room);
+  //   app.filterMessages(room);
+  // });
+
+  $('#side-bar').click(function(e){
+    var room = $(e.target).attr('room');
+    if (room !== undefined) {
+      app.filterMessages(room);
+    }
+  });
+
+
+
 
 
 });

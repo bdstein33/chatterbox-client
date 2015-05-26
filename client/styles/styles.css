@@ -18,6 +18,7 @@ html {
 body {
     background: #fafafa;
     max-width: 1200px;
+    min-width: 1200px;
     margin-left:auto;
     margin-right: auto;
     height: 100%;
@@ -28,6 +29,9 @@ body {
     background-color: #303030;
     height: 50px;
     width: 100%;
+    overflow: none;
+    max-height: 50px;
+
 }
 
 #header-main {
@@ -66,6 +70,9 @@ body {
     color: #fafafa;
     padding-top: 20px;
     float: left;
+    overflow: scroll;
+    z-index: -10;
+
 }
 
 .side-bar-header {
@@ -74,6 +81,7 @@ body {
     border-bottom: 1px solid white;
     margin-bottom: 5px;
     font-size: 24px;
+    z-index: 10;
 }
 
 .side-bar-room {
@@ -100,15 +108,31 @@ body {
 }
 
 #form-container {
-    width: 750px;
-    height: 225px;
+    width: 100%;
+    height: auto;
     background-color: #E74C3C;
     color: white;
+    overflow: none;
+}
+
+#form-container-content {
+    display: block;
+    width: 743px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #form-input-container {
     float:left;
+};
 
+#form-input-container div {
+    margin-bottom: 4px;
+}
+
+.form-question {
+    margin-bottom: 4px;
+/*    height: 20px;*/
 }
 
 
@@ -144,6 +168,7 @@ body {
     border: 1px solid #E74C3C;
     color: white;
     line-height: 18px;
+    border: 1px solid white;
 }
 
 .form-input:focus{
@@ -157,21 +182,64 @@ body {
 
 .submit {
     display: inline;
-    border:none;
+    border:1px solid white;
     background-color: #E74C3C;
     font-size: 30px;
     color: white;
     width: 200px;
-    height: 105px;
-    margin-top:  20px;
+    height: 100px;
+    margin-left:  20px;
     border-radius: 15px;
 }
 
 .submit:hover{
     cursor: pointer;
-    font-weight: 700;
+    background-color: white;
+    color: #E74C3C;
 }
 
+
+.message-container {
+    max-height: 100%;
+    overflow: scroll;
+}
+
+.message-container-title{
+    text-align: center;
+    font-size: 30px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.message{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    border-top: 1px solid #DCD6D7;
+}
+
+.message-text{
+    font-weight: 700;
+    color: #425F63;
+    font-size: 20px;
+}
+
+.message-username {
+    float: left;
+    margin-right: 10px;
+    line-height: 16px;
+}
+
+.message-date {
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.message-room {
+    color: #909A9C;
+    font-weight: 700;
+    font-size: 14px;
+}
 
 
 form {
@@ -209,9 +277,6 @@ p {
     padding: 0;
 }
 
-.message {
-    margin-bottom: 20px;
-}
 
 .centered-button {
     width: 200px;
@@ -241,18 +306,5 @@ p {
     margin-bottom: 1px;
 }
 
-/*.form-container {
-    background-color: #f7f7f7;
-}*/
 
-form {
-    width: 100%;
-}
 
-input{
-    margin-bottom: 10px;
-}
-
-.submit {
-    display: block;
-}
